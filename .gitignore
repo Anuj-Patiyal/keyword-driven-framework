@@ -10,3 +10,4 @@ logs/*
 reports/*
 /target/
 /bin/
+/test-output/*
