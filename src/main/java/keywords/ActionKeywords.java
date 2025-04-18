@@ -4,11 +4,9 @@ import drivers.DriverManager;
 import org.openqa.selenium.By;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.*;
 import java.time.Duration;
 import org.openqa.selenium.WebElement;
 import utils.WaitUtils;
-
 
 public class ActionKeywords {
 
@@ -19,10 +17,10 @@ public class ActionKeywords {
      * Launches the browser instance.
      * @param browserType e.g., "chrome", "firefox"
      */
-    public static void openBrowser(String browserType) {
+    public static void openBrowser(String browser) {
         try {
-            DriverManager.initializeDriver(browserType);
-            logger.info("✅ Browser launched: {}", browserType);
+            DriverManager.initializeDriver(browser);  // Initialize driver based on browser
+            logger.info("✅ Browser launched: {}", browser);
         } catch (Exception e) {
             logger.error("❌ Failed to open browser: {}", e.getMessage());
         }
@@ -71,11 +69,12 @@ public class ActionKeywords {
             logger.error("❌ Failed to click on element '{}': {}", locator, e.getMessage());
         }
     }
+
     /**
-    * Verifies the page title against the expected title.
-    *
-    * @param expectedTitle Title expected to be seen on the current page.
-    */
+     * Verifies the page title against the expected title.
+     *
+     * @param expectedTitle Title expected to be seen on the current page.
+     */
     public static void verifyTitle(String expectedTitle) {
         // Get actual title from current browser window
         String actualTitle = DriverManager.getDriver().getTitle();

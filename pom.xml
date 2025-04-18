@@ -36,7 +36,7 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>7.11.0</version>
-      <scope>test</scope>
+<!--      <scope>test</scope> -->
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
@@ -105,6 +105,11 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.3</version>
+          <configuration>
+            <suiteXmlFiles>
+              <suiteXmlFile>testng.xml</suiteXmlFile>
+            </suiteXmlFiles>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>

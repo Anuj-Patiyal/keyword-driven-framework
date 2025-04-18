@@ -1,60 +1,66 @@
 package reports;
 
 import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import drivers.DriverManager;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class ExtentReportManager {
 
-    private static ExtentReports extent;
+    private static ExtentReports extentReports;
+    private static final ThreadLocal<ExtentTest> extentTestThreadLocal = new ThreadLocal<>();
 
-    public static ExtentReports getInstance() {
-        if (extent == null) {
-            String reportPath = System.getProperty("user.dir") + "/test-output/ExtentReport.html";
-            ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
+    private static final Map<String, ExtentTest> testMap = new HashMap<>();
 
-            sparkReporter.config().setDocumentTitle("Automation Test Report");
-            sparkReporter.config().setReportName("Keyword Driven Framework - Execution Report");
-            sparkReporter.config().setTheme(Theme.DARK);
+    // Generates filename with format ExtentReport_DDMMMYYYY_HHMMSS.html
+    private static String getTimestampedReportName() {
+        return "ExtentReport_" + new SimpleDateFormat("ddMMMyyyy_HHmmss").format(new Date()) + ".html";
+    }
 
-            extent = new ExtentReports();
-            extent.attachReporter(sparkReporter);
+    public static void initReports() {
+        if (extentReports == null) {
+            String reportFile = System.getProperty("user.dir") + "/reports/" + getTimestampedReportName();
+            ExtentSparkReporter reporter = new ExtentSparkReporter(reportFile);
+            reporter.config().setDocumentTitle("Automation Execution Report");
+            reporter.config().setReportName("Keyword Driven Test Results");
+            reporter.config().setTheme(Theme.STANDARD);
+            reporter.config().setEncoding("utf-8");
 
-            // System info
-            extent.setSystemInfo("Project Name", "Keyword Driven Framework");
-            extent.setSystemInfo("Tester", "Anuj Kumar");
+            extentReports = new ExtentReports();
+            extentReports.attachReporter(reporter);
 
-            try {
-                String os = System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ")";
-                String javaVersion = System.getProperty("java.version");
-                String machineName = InetAddress.getLocalHost().getHostName();
-
-                extent.setSystemInfo("Operating System", os);
-                extent.setSystemInfo("Machine Name", machineName);
-                extent.setSystemInfo("Java Version", javaVersion);
-                extent.setSystemInfo("User", System.getProperty("user.name"));
-
-                // WebDriver details (if available)
-                if (DriverManager.getDriver() != null) {
-                    Capabilities caps = ((RemoteWebDriver) DriverManager.getDriver()).getCapabilities();
-                    String browserName = caps.getBrowserName();
-                    String browserVersion = caps.getBrowserVersion();
-
-                    extent.setSystemInfo("Browser", browserName);
-                    extent.setSystemInfo("Browser Version", browserVersion);
-                }
-
-            } catch (UnknownHostException e) {
-                extent.setSystemInfo("Machine", "Unknown (Could not fetch)");
-            }
+            // Capture dynamic system and environment info
+            extentReports.setSystemInfo("OS", System.getProperty("os.name"));
+            extentReports.setSystemInfo("OS Version", System.getProperty("os.version"));
+            extentReports.setSystemInfo("Java Version", System.getProperty("java.version"));
         }
-        return extent;
+    }
+
+    public static synchronized ExtentTest createTest(String testName) {
+        ExtentTest test = extentReports.createTest(testName);
+        extentTestThreadLocal.set(test);
+        testMap.put(testName, test);
+        return test;
+    }
+
+    public static synchronized ExtentTest getTest() {
+        return extentTestThreadLocal.get();
+    }
+
+    public static void flushReports() {
+        if (extentReports != null) {
+            extentReports.flush();
+        }
+    }
+
+    public static void unload() {
+        extentTestThreadLocal.remove();
     }
 }
+

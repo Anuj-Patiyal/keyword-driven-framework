@@ -1,34 +1,34 @@
 package utils;
 
-import drivers.DriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
+import drivers.DriverManager;
 
-/**
- * Utility class for explicit waits
- */
 public class WaitUtils {
 
-    // Global wait timeout in seconds
-    private static final int TIMEOUT = 10;
-
     /**
-     * Wait for visibility of element
+     * Waits for an element to be visible on the page.
+     * @param locator The locator for the element.
+     * @return The WebElement that is visible.
      */
     public static WebElement waitForVisibility(By locator) {
-        WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(TIMEOUT));
+        WebDriver driver = DriverManager.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     /**
-     * Wait for element to be clickable
+     * Waits for an element to be clickable on the page.
+     * @param locator The locator for the element.
+     * @return The WebElement that is clickable.
      */
     public static WebElement waitForClickability(By locator) {
-        WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(TIMEOUT));
+        WebDriver driver = DriverManager.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 }
