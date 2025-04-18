@@ -26,22 +26,22 @@ public class DriverManager {
             if (browser.equalsIgnoreCase("chrome")) {
                 WebDriverManager.chromedriver().setup();
                 driver = new ChromeDriver();
-                logger.info("Initialized Chrome browser.");
+                logger.info("Initialized Chrome browser ✅");
             } else if (browser.equalsIgnoreCase("firefox")) {
                 WebDriverManager.firefoxdriver().setup();
                 driver = new FirefoxDriver();
-                logger.info("Initialized Firefox browser.");
+                logger.info("Initialized Firefox browser ✅");
             } else {
-                logger.error("Unsupported browser type: {}", browser);
-                throw new RuntimeException("Browser not supported: " + browser);
+                logger.error("❌ Unsupported browser type: {}", browser);
+                throw new RuntimeException("❌ Browser not supported: " + browser);
             }
 
             // Maximize and setup default config
             driver.manage().window().maximize();
-            logger.info("Browser window maximized.");
+            logger.info("Browser window maximized ✅");
 
         } catch (Exception e) {
-            logger.error("Failed to initialize browser '{}': {}", browser, e.getMessage());
+            logger.error("❌ Failed to initialize browser '{}': {}", browser, e.getMessage());
         }
     }
 
@@ -61,10 +61,10 @@ public class DriverManager {
         try {
             if (driver != null) {
                 driver.quit();
-                logger.info("WebDriver quit successfully.");
+                logger.info("WebDriver quit successfully ✅");
             }
         } catch (Exception e) {
-            logger.error("Error while quitting the WebDriver: {}", e.getMessage());
+            logger.error("❌ Error while quitting the WebDriver: {}", e.getMessage());
         }
     }
 }

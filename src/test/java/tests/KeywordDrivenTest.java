@@ -31,7 +31,12 @@ public class KeywordDrivenTest {
                     testCase, action, locatorType, locatorValue, value);
 
             try {
-                switch (action.toLowerCase()) {
+                // Skip empty rows
+                if (action == null || action.trim().isEmpty()) {
+                logger.warn("⚠️ Skipping empty row or missing action keyword.");
+                continue;
+            }
+                switch (action.trim().toLowerCase()) {
                     case "openbrowser":
                         ActionKeywords.openBrowser(value); // browser name
                         break;
@@ -52,11 +57,15 @@ public class KeywordDrivenTest {
                         ActionKeywords.closeBrowser();
                         break;
 
+                    case "verifytitle":
+                        ActionKeywords.verifyTitle(value);
+                        break;
+
                     default:
-                        logger.warn("Unknown action keyword: {}", action);
+                        logger.warn("❌ Unknown action keyword: {}", action);
                 }
             } catch (Exception e) {
-                logger.error("Error executing step for action '{}': {}", action, e.getMessage());
+                logger.error("❌ Error executing step for action '{}': {}", action, e.getMessage());
             }
         }
     }
@@ -79,8 +88,8 @@ public class KeywordDrivenTest {
             case "linktext": return By.linkText(value);
             case "partiallinktext": return By.partialLinkText(value);
             default:
-                logger.warn("Invalid locator type: {}", type);
-                throw new IllegalArgumentException("Invalid locator type: " + type);
+                logger.warn("❌ Invalid locator type: {}", type);
+                throw new IllegalArgumentException("❌ Invalid locator type: " + type);
         }
     }
 }

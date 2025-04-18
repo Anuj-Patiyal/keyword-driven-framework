@@ -58,7 +58,7 @@ public class ExcelUtils {
             }
 
         } catch (Exception e) {
-            logger.error("Error reading Excel file '{}': {}", EXCEL_PATH, e.getMessage());
+            logger.error("❌ Error reading Excel file '{}': {}", EXCEL_PATH, e.getMessage());
         }
 
         return testSteps;
